@@ -1,38 +1,140 @@
-.App {
+.container {
+    margin-top: 20px;
+}
+.post__items {
+  list-style: none;
+  /* display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 10px; */
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.post__item {
+  flex: 1 1 240px;
+  margin: 0 10px 1rem 10px;
+}
+
+/* Footer */
+
+.main-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #343a40!important;
+  color: #FFFFFF; 
+  height: 60px;
+  padding: 10px;
+}
+
+.main-footer > p {
+  margin: 0;
+}
+
+.footer__links {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.footer__links > li {
+  padding: 0 16px;
+}
+
+.footer__links > li a {
+  color: #FFF;
+  text-decoration: none;
+}
+
+/* Search Page */
+
+.search-page {
   text-align: center;
+  margin: 0 auto;
+}
+.heading {
+  font-size: 30px;
+  padding: 16px 0;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.search-label {
+  position: relative;
+  width: 600px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+#search-input {
+  width: 100%;
+  padding: 16px;
+  font-size: 25px;
+  font-style: italic;
+  box-sizing: border-box;
+  outline: none;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.search-icon {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #555;
+  font-size: 24px;
+  right: 14px;
+}
+
+.results-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+}
+
+.result-item {
+  position: relative;
+  padding: 16px;
+  margin: 16px;
+  text-align: center;
+  min-width: 200px;
+  box-shadow: 2px 2px 2px #898989;
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.image-username {
+  color: coral;
+  font-size: 18px;
+  order: 1;
+  background-color: rgba(0,0,0, 0.8);
+  padding: 5px 10px;
+  margin-top: 10px;
+}
+
+.image {
+  width: 100%;
+  height: 200px;
+}
+
+/* .image-wrapper {
+  display: flex;
+  align-self: center;
+  box-sizing: border-box;
+  height: 100%;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+} */
+
+.search-loading {
+  display: block;
+  position: fixed;
+  z-index: 1;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
-.App-link {
-  color: #61dafb;
+
+.show {
+  display: block;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.hide {
+  display: none;
 }
