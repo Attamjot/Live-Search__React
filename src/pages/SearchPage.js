@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import Loader from '../loader.gif';
+import SearchPagination from '../components/SearchPagination';
 
 class SearchPage extends Component {
   constructor(props) {
@@ -9,9 +10,34 @@ class SearchPage extends Component {
           query: "", // live query
           results: {},  // will store the results in this key
           loading: false,  // for loading status
-          message: ""  // Incase if we get a message , we will store in this variable
+          message: "",  // Incase if we get a message , we will store in this variable
+          totalResults: 0,
+          totalPages: 0,
+          currentPage: 0
       };
       this.cancel = "";
+  }
+  /*
+    @Params:
+        total = totalResultCount
+        denominator = How many items you want to show perPage.
+    @ How it works: 
+      Case 1:   Suppose totalResultCount = 61;
+                denomiator = 20,
+        then 61 / 20 , will give us a remaninder of 1.
+        So it means we have to show 4 pages i.e first three pages with 20 results and last page with one Result.
+        Hope now it makes sense.
+      Case 2 : 
+                Suppose totalResultCount = 60;
+                denomiator = 20,
+        then 60 / 20 , will give us a remaninder of 0.
+        So it means we have to show 3 pages i.e three pages with 20 results each.
+        Hope now it makes sense.
+  */
+  getPageCount = ( total, denominator ) => {
+    const divisible = 0 === total % denominator;
+    const valueToBeAdded = divisible ? 0 : 1;
+    return Math.floor(total / denominator) + valueToBeAdded;
   }
 
   handleOnInputChange = (event) => {
@@ -21,7 +47,10 @@ class SearchPage extends Component {
             ...this.state,
             results: {},
             query: query,
-            message: ""
+            message: "",
+            currentPage: 0,
+            totalPages: 0,
+            totalResults: 0
         });
     } else {
         this.setState({
@@ -46,13 +75,18 @@ class SearchPage extends Component {
     axios.get( searchUrl , {
         cancelToken: this.cancel.token
     }).then((response) => {
+        const total = response.data.total;
+        const totalPagesCount = this.getPageCount(total, 20);
         const resultNotFoundMsg = !response.data.hits.length ? 
                                 "There are no more search results. Please try a new search." : "";
         this.setState({
             ...this.state,
             results: response.data.hits,
             loading: false,
-            message: resultNotFoundMsg
+            message: resultNotFoundMsg,
+            totalResults: total,
+            totalPages: totalPagesCount,
+            currentPage: resultNotFoundMsg ? 0 : updatedPageNo
         });
     }).catch((error) => {
         if(axios.isCancel(error) || error) {
@@ -63,6 +97,25 @@ class SearchPage extends Component {
             });
         }
     });
+  }
+   /* Handling Pagination ( Prev, Next Click Handler ) */
+  handlePageClick = (event, type) => {
+    const { currentPage, loading, query } = this.state;
+    event.preventDefault();
+    const updatePage = "prev" === type ? currentPage - 1 : currentPage + 1;
+
+    /* User can click the next/ prev button also before the fetchResults is happening, so at that time we cannot get prev/ next results . So to check the loading property can help us.  */
+    if ( !loading ) {
+        this.setState({
+            ...this.state,
+            loading : true,
+            message: ""
+        }, () => {
+            setTimeout(() => {
+                this.fetchSearchResults(updatePage, query);
+            }, 1000);
+        })
+    } 
   }
 
   renderSearchResults = () => {
@@ -89,7 +142,10 @@ class SearchPage extends Component {
   }
 
   render() {
-      const { query, loading, message } = this.state;
+      const { query, loading, message, currentPage, totalPages } = this.state;
+      const showPrevLink = currentPage > 1; /* Can only show Previous Button, only if the currentPage > 1 */
+      const showNextLink = totalPages > currentPage; /* Can only show the Next Button , if totalPages > currentPage. Suppose we have 100 pages and the person is at 99, then only show the next Button otherwise not. */
+
       return (
          <div className="container search-page">
              <div className="heading">Live Search: React Application</div>
@@ -110,7 +166,14 @@ class SearchPage extends Component {
 
              {/* Loader */}
                 <img src={Loader} className={`search-loading ${loading ? "show" : "hide"}`}/>
-
+            <h4>CurrentPage: {currentPage}</h4>
+             <SearchPagination 
+                loading = {loading}
+                handlePrevClick = {(event) => this.handlePageClick(event, "prev")}
+                handleNextClick = {(event) => this.handlePageClick(event, "next")}
+                showPrevLink = {showPrevLink}
+                showNextLink = {showNextLink}            
+            />
              {/* Results */}
              {this.renderSearchResults()}
          </div>

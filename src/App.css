@@ -138,3 +138,20 @@
 .hide {
   display: none;
 }
+
+.nav-link-container {
+  margin: 16px 0;
+}
+
+.nav-link-container > .pagination {
+  justify-content: flex-end;
+}
+
+.page-item.disabled .page-link {
+  background-color: #fff5f5 ;
+  pointer-events: none;
+}
+
+.pagination li:first-of-type {
+  margin-right: 10px;
+}
