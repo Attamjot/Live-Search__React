@@ -144,7 +144,8 @@
 }
 
 .nav-link-container > .pagination {
-  justify-content: flex-end;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .page-item.disabled .page-link {

@@ -99,11 +99,17 @@ class SearchPage extends Component {
     });
   }
    /* Handling Pagination ( Prev, Next Click Handler ) */
-  handlePageClick = (event, type) => {
+  handlePageClick = (event, type, pageNumber) => {
     const { currentPage, loading, query } = this.state;
     event.preventDefault();
-    const updatePage = "prev" === type ? currentPage - 1 : currentPage + 1;
+    let updatePage = 1; // default to 1 page
 
+    if(type) {
+      updatePage = "prev" === type ? currentPage - 1 : currentPage + 1;
+    } else {
+      updatePage = pageNumber;
+    }
+    
     /* User can click the next/ prev button also before the fetchResults is happening, so at that time we cannot get prev/ next results . So to check the loading property can help us.  */
     if ( !loading ) {
         this.setState({
@@ -111,11 +117,9 @@ class SearchPage extends Component {
             loading : true,
             message: ""
         }, () => {
-            setTimeout(() => {
-                this.fetchSearchResults(updatePage, query);
-            }, 1000);
+           this.fetchSearchResults(updatePage, query);
         })
-    } 
+    }
   }
 
   renderSearchResults = () => {
@@ -131,7 +135,7 @@ class SearchPage extends Component {
                                 <img
                                     className="image" 
                                     src={result.previewURL}
-                                    alt={`${result.user} image`} />
+                                    alt={`${result.user} images`} />
                             </div>
                         </a>
                     ))
@@ -165,14 +169,18 @@ class SearchPage extends Component {
               }
 
              {/* Loader */}
-                <img src={Loader} className={`search-loading ${loading ? "show" : "hide"}`}/>
-            <h4>CurrentPage: {currentPage}</h4>
+                <img alt="loading-bar" src={Loader} className={`search-loading ${loading ? "show" : "hide"}`}/>
+            
+             <h4>CurrentPage: {currentPage}</h4>
              <SearchPagination 
                 loading = {loading}
                 handlePrevClick = {(event) => this.handlePageClick(event, "prev")}
                 handleNextClick = {(event) => this.handlePageClick(event, "next")}
+                handlePageNumber = {(event, pageNumber) => this.handlePageClick(event, null , pageNumber)}
                 showPrevLink = {showPrevLink}
-                showNextLink = {showNextLink}            
+                showNextLink = {showNextLink}
+                totalPages = {totalPages}
+                currentPage= {currentPage}         
             />
              {/* Results */}
              {this.renderSearchResults()}

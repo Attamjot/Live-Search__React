@@ -1,5 +1,6 @@
 import React from 'react';
 import Post from './Post';
+import axios from 'axios';
 
 class Posts extends React.Component {
     constructor(props) {
@@ -11,17 +12,37 @@ class Posts extends React.Component {
     }
 
     componentDidMount() {
-       fetch('https://jsonplaceholder.typicode.com/posts')
-        .then(response => response.json())
-        .then(json => {
-            setTimeout(() => {
-                this.setState({
-                    ...this.state,
-                    posts: json,
-                    loading: false
-                });
-            }, 500);
-        });
+       this.fetchPosts();
+    }
+
+    fetchPosts = async () => {
+        // Promise way
+            // fetch('https://jsonplaceholder.typicode.com/posts')
+            // .then(response => response.json())
+            // .then(json => {
+            //     this.setState({
+            //         ...this.state,
+            //         posts: json,
+            //         loading: false
+            //     });
+            // });
+
+        // async / await way ( with fetch API )
+            // const response = await fetch("https://jsonplaceholder.typicode.com/posts");
+            // const json = await response.json();
+            // this.setState({
+            //     ...this.state,
+            //     posts: json,
+            //     loading: false
+            // });
+            
+       // async / await ( axios way )
+       const response = await axios.get("https://jsonplaceholder.typicode.com/posts");
+       this.setState({
+         ...this.state,
+         posts: response.data,
+         loading: false  
+       });
     }
 
     renderPosts = () => {
