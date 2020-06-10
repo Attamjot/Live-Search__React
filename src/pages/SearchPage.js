@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import Loader from '../loader.gif';
-import SearchPagination from '../components/SearchPagination';
+import Pagination from '../components/Pagination';
 
 class SearchPage extends Component {
   constructor(props) {
@@ -153,7 +153,7 @@ class SearchPage extends Component {
       return (
          <div className="container search-page">
              <div className="heading">Live Search: React Application</div>
-             <label type="text" className="search-label" htmlFor="search-input">
+             <label className="search-label" htmlFor="search-input">
                 <input 
                     type="text"
                     value={query}
@@ -172,11 +172,9 @@ class SearchPage extends Component {
                 <img alt="loading-bar" src={Loader} className={`search-loading ${loading ? "show" : "hide"}`}/>
             
              <h4>CurrentPage: {currentPage}</h4>
-             <SearchPagination 
+             <Pagination 
                 loading = {loading}
-                handlePrevClick = {(event) => this.handlePageClick(event, "prev")}
-                handleNextClick = {(event) => this.handlePageClick(event, "next")}
-                handlePageNumber = {(event, pageNumber) => this.handlePageClick(event, null , pageNumber)}
+                handlePageClick = {(event, type, pageNumber) => this.handlePageClick(event, type, pageNumber)}
                 showPrevLink = {showPrevLink}
                 showNextLink = {showNextLink}
                 totalPages = {totalPages}
@@ -188,6 +186,5 @@ class SearchPage extends Component {
       )
   }
 }
-
 
 export default SearchPage;
