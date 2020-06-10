@@ -11,3 +11,7 @@
   * Files:
     * SearchPageOnClick
     * Pagination
+
+### Live Search with Infinite Scrolling 
+  * Files:
+    * ContactUs Page
